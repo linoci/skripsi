@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cetak Log Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body onload="window.print()">
+    <h3>Log Login - Nama: {{ name|default:"Semua" }}</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Role</th>
+                <th>Waktu Login</th>
+                <th>IP</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.name }}</td>
+                <td>{{ log.role }}</td>
+                <td>{{ log.timestamp|date:'Y-m-d H:i:s' }}</td>
+                <td>{{ log.ip_address }}</td>
+                <td>{{ log.latitude }}</td>
+                <td>{{ log.longitude }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Tidak ada data login.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

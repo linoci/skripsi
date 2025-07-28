@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <title>Face Recognition App</title>
+
+    <!-- Menambahkan font dari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+
+    <!-- Menambahkan CSS -->
+    <style>
+        body {
+            font-family: 'Rethink Sans', Arial, sans-serif; /* Gunakan font baru */
+            background-color: #0d509c;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        #video-container {
+            margin-top: 20px;
+        }
+        #videoFeed {
+            background-color: #0d509c;
+            padding: 10px;
+            margin: 10px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 1000px; /* Perbesar ukuran maksimal container */
+        }
+        .logo {
+            width: 100px; /* Ukuran logo */
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #333;
+            font-size: 35px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Card yang mencakup logo, judul, dan video stream -->
+    <div class="card">
+        <!-- Logo di atas teks -->
+        <img src="{% static 'assets/logo-bi.svg' %}" alt="Logo" class="logo"/>
+
+
+        <!-- Judul aplikasi -->
+        <h1>BI - APP</h1>
+
+        <!-- Container untuk video stream -->
+        <div id="video-container">
+            <img src="{% url 'video_feed' %}" width="640" height="480" alt="Video feed" id="videoFeed"/>
+        </div>
+    </div>
+    <script>
+        navigator.geolocation.getCurrentPosition(function(position) {
+            fetch("{% url 'save_location' %}", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            });
+        });
+        
+        setInterval(function() {
+            fetch("{% url 'check_auth' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            });
+        }, 1000);
+        </script>        
+</body>    
+</html>

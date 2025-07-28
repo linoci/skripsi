@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard Pegawai - Bank Indonesia</title>
+    <link rel="stylesheet" href="{% static 'hal/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'hal/vendors/base/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'hal/css/style.css' %}">
+    <style>
+      .congratulation-bg {
+        background-image: url('https://images.unsplash.com/photo-1531988042231-d39c7c72a1cb?auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+      }
+      #login-section, #job-section {
+        scroll-margin-top: 100px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      table, th, td {
+        border: 1px solid #ccc;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+  
+      table thead th {
+        background-color: #20c997; /* hijau tosca */
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="horizontal-menu">
+      <nav class="navbar top-navbar col-lg-12 col-12 p-0">
+        <div class="container-fluid">
+          <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
+            <ul class="navbar-nav navbar-nav-left">
+             
+            </ul>
+
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+              <a class="navbar-brand brand-logo text-dark text-decoration-none" href="/">
+                <h3 class="fw-bold mb-0">Bank Indonesia</h3>
+              </a>
+              <a class="navbar-brand brand-logo-mini" href="/">
+                <img src="{% static 'hal/images/bi-icon.svg' %}" alt="logo-mini" style="height: 35px;" />
+              </a>
+            </div>
+
+            <ul class="navbar-nav navbar-nav-right">
+              
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <nav class="bottom-navbar">
+        <div class="container">
+          <ul class="nav page-navigation">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-home menu-icon"></i><span class="menu-title">Beranda</span></a></li>
+            <li class="nav-item">
+              <a href="#login-section" class="nav-link"><i class="mdi mdi-eye menu-icon"></i><span class="menu-title">Aktivitas Login</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#job-section" class="nav-link"><i class="mdi mdi-calendar-check menu-icon"></i><span class="menu-title">Pekerjaan</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#job-section" class="nav-link"><i class="mdi mdi-logout text-primary"></i><span class="menu-title">Log Out</span></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row mb-4">
+            <div class="col-lg-12">
+              <div class="card congratulation-bg text-center">
+                <div class="card-body pb-0">
+                  <img src="{% static 'hal/images/icons/user-icon.svg' %}" alt="" style="width: 60px;" />
+                  <h2 class="mt-3 mb-3 font-weight-bold">Selamat Datang di Dashboard Pegawai</h2>
+                  <p>Pantau kehadiran, jadwal, dan aktivitas login Anda melalui sistem pegawai Bank Indonesia.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <!-- Login Mingguan -->
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Login Mingguan</h4>
+                  <canvas id="weeklyLoginChart"></canvas>
+                  <p class="mt-3 text-muted">Jumlah login pegawai dalam 7 hari terakhir.</p>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Divisi Pegawai -->
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Distribusi Divisi Pegawai</h4>
+                  <canvas id="divisionChart"></canvas>
+                  <p class="mt-3 text-muted">Perbandingan jumlah pegawai per divisi.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Aktivitas Login Section -->
+<div class="row mt-5" id="login-section">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Aktivitas Login Pegawai</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Waktu Login</th>
+              <th>IP Address</th>
+              <th>Lokasi</th>
+              <th>Foto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              {% if log.role == 'employee' %}
+              <tr>
+                <td>{{ log.name }}</td>
+                <td>{{ log.timestamp|date:"d M Y H:i:s" }}</td>
+                <td>{{ log.ip_address }}</td>
+                <td>{{ log.latitude }}, {{ log.longitude }}</td>
+                <td>
+                  {% if log.photo %}
+                    <img src="{{ log.photo.url }}" alt="Foto Login" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endif %}
+            {% empty %}
+              <tr><td colspan="5">Belum ada aktivitas login.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+          <!-- Pekerjaan Section -->
+          <div class="row mt-5" id="job-section">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Informasi Pekerjaan</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Divisi</th>
+                        <th>Deskripsi</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>IT & Infrastruktur</td>
+                        <td>Mengelola sistem keamanan, jaringan, dan pengembangan aplikasi internal.</td>
+                        <td><span class="badge badge-success">Aktif</span></td>
+                      </tr>
+                      <tr>
+                        <td>Keuangan</td>
+                        <td>Menangani pencatatan transaksi keuangan dan penyusunan laporan keuangan institusi.</td>
+                        <td><span class="badge badge-warning">Proyek Baru</span></td>
+                      </tr>
+                      <tr>
+                        <td>SDM</td>
+                        <td>Mengelola data pegawai, pelatihan, dan proses rekrutmen pegawai baru.</td>
+                        <td><span class="badge badge-info">Stabil</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <footer class="footer">
+          <div class="footer-wrap">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Hak Cipta &copy; Bank Indonesia 2025</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="{% static 'hal/vendors/base/vendor.bundle.base.js' %}"></script>
+    <script src="{% static 'hal/js/template.js' %}"></script>
+    <script src="{% static 'hal/vendors/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'hal/js/dashboard.js' %}"></script>
+
+    <script>
+      // Data Login Mingguan (dummy)
+      const weeklyLoginCtx = document.getElementById('weeklyLoginChart').getContext('2d');
+      new Chart(weeklyLoginCtx, {
+        type: 'line',
+        data: {
+          labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+          datasets: [{
+            label: 'Login',
+            data: [5, 8, 6, 4, 7, 3, 2],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: '#36A2EB',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    
+      // Data Distribusi Divisi (dummy)
+      const divisionCtx = document.getElementById('divisionChart').getContext('2d');
+      new Chart(divisionCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['IT', 'Keuangan', 'SDM'],
+          datasets: [{
+            label: 'Pegawai',
+            data: [10, 6, 4],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    </script>
+    
+  </body>
+</html>

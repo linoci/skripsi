@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoring Divisi</title>
+    <link href="{% static 'new/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,700" rel="stylesheet">
+    <link href="{% static 'new/css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    {% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Monitoring Divisi</h2>
+        <div class="row">
+            <!-- Divisi Aplikasi -->
+            <div class="col-md-6">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Divisi Aplikasi
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <span id="aplikasi-count">0</span> Pegawai Terverifikasi
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-laptop-code fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Divisi Jaringan -->
+            <div class="col-md-6">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Divisi Jaringan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <span id="jaringan-count">0</span> Pegawai Terverifikasi
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-network-wired fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    <script src="{% static 'new/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'new/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'new/js/sb-admin-2.min.js' %}"></script>
+    <script>
+        // Dummy data update
+        document.getElementById('aplikasi-count').innerText = 12;
+        document.getElementById('jaringan-count').innerText = 8;
+    </script>
+</body>
+</html>
